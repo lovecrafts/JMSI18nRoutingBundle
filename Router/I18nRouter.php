@@ -121,7 +121,7 @@ class I18nRouter extends Router
         // if an absolute or network URL is requested, we set the correct host
         if ($needsHost && $this->hostMap) {
             $currentHost = $this->context->getHost();
-            $this->context->setHost($this->hostMap[$locale]);
+            $this->context->setHost($this->hostMap[$locale]['host']);
         }
 
         try {
@@ -211,16 +211,16 @@ class I18nRouter extends Router
                 //       Below we assume that we do not want to redirect always.
 
                 // if the available locales are on a different host, throw a ResourceNotFoundException
-                if ($this->hostMap) {
+                if ($this->hostMap && isset($this->hostMap[$currentLocale])) {
                     // generate host maps
                     $hostMap = $this->hostMap;
                     $availableHosts = array_map(function($locale) use ($hostMap) {
-                        return $hostMap[$locale];
+                        return $hostMap[$locale]['host'];
                     }, $params['_locales']);
 
                     $differentHost = true;
                     foreach ($availableHosts as $host) {
-                        if ($this->hostMap[$currentLocale] === $host) {
+                        if ($this->hostMap[$currentLocale]['host'] === $host) {
                             $differentHost = false;
                             break;
                         }
@@ -228,7 +228,7 @@ class I18nRouter extends Router
 
                     if ($differentHost) {
                         throw new ResourceNotFoundException(sprintf('The route "%s" is not available on the current host "%s", but only on these hosts "%s".',
-                            $params['_route'], $this->hostMap[$currentLocale], implode(', ', $availableHosts)));
+                            $params['_route'], $this->hostMap[$currentLocale]['host'], implode(', ', $availableHosts)));
                     }
                 }
 
@@ -245,7 +245,7 @@ class I18nRouter extends Router
         // check if the matched route belongs to a different locale on another host
         if (isset($params['_locale'])
                 && isset($this->hostMap[$params['_locale']])
-                && $this->context->getHost() !== $host = $this->hostMap[$params['_locale']]) {
+                && $this->context->getHost() !== $host = $this->hostMap[$params['_locale']]['host']) {
             if (!$this->redirectToHost) {
                 throw new ResourceNotFoundException(sprintf(
                     'Resource corresponding to pattern "%s" not found for locale "%s".', $url, $this->getContext()->getParameter('_locale')));

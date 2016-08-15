@@ -3,7 +3,12 @@ imports:
 
 jms_i18n_routing:
     default_locale: en
-    locales: [de, en]
+    locales: [de, en, fr]
     hosts:
-        en: en.host
-        de: de.host
+        fr:
+          host: host.com
+          path: /fr/
+        en:
+          host: host.com
+        de:
+          host: host.de

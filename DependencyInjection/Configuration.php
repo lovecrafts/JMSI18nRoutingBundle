@@ -87,18 +87,12 @@ final class Configuration implements ConfigurationInterface
                     ->booleanNode('prefix_with_locale')->defaultFalse()->end()
                     ->booleanNode('omit_prefix_when_default')->defaultTrue()->end()
                     ->arrayNode('hosts')
-                        ->validate()
-                            ->always()
-                            ->then(function($v) {
-                                if (count($v) !== count(array_flip($v))) {
-                                    throw new \Exception('Every locale must map to a different host. You cannot have multiple locales map to the same host.');
-                                }
-
-                                return $v;
-                            })
+                        ->prototype('array')
+                            ->children()
+                                ->scalarNode('host')->cannotBeEmpty()->end()
+                                ->scalarNode('path')->defaultValue('/')->end()
+                            ->end()
                         ->end()
-                        ->useAttributeAsKey('locale')
-                        ->prototype('scalar')->end()
                     ->end()
                     ->booleanNode('redirect_to_host')->defaultTrue()->end()
                     ->booleanNode('use_cookie')->defaultTrue()->info('DEPRECATED! Please use: cookie.enabled')->end()
