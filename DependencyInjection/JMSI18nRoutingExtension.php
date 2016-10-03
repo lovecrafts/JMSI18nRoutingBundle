@@ -64,10 +64,13 @@ class JMSI18nRoutingExtension extends Extension
                 ->getDefinition('jms_i18n_routing.router')
                 ->addMethodCall('setHostMap', array('%jms_i18n_routing.hostmap%'))
             ;
-
             $container
                 ->getDefinition('jms_i18n_routing.locale_resolver.default')
-                ->addArgument(array_flip($config['hosts']))
+                ->addArgument('%jms_i18n_routing.hostmap%')
+            ;
+            $container
+                ->getDefinition('jms_i18n_routing.pattern_generation_strategy.default')
+                ->addArgument('%jms_i18n_routing.hostmap%')
             ;
         } elseif ($config['cookie']['enabled']) {
             $container

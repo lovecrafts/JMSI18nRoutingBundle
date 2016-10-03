@@ -33,9 +33,16 @@ class DefaultLocaleResolver implements LocaleResolverInterface
      */
     public function resolveLocale(Request $request, array $availableLocales)
     {
-        if ($this->hostMap && isset($this->hostMap[$host = $request->getHost()])) {
-            return $this->hostMap[$host];
-        }
+        if (!empty($this->hostMap)) {
+            foreach ($this->hostMap as $locale => $params) {
+                if ($params['host'] !== $request->getHost()) {
+                    continue;
+                }
+                if (strpos(rtrim($request->getPathInfo(), '/') . '/', $params['path']) === 0) {
+                    return $locale;
+                }
+            }
+         }
 
         // if a locale has been specifically set as a query parameter, use it
         if ($request->query->has('hl')) {

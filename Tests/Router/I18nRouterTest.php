@@ -60,22 +60,22 @@ class I18nRouterTest extends \PHPUnit_Framework_TestCase
     {
         $router = $this->getRouter();
         $router->setHostMap(array(
-            'de' => 'de.host',
-            'en' => 'en.host',
-            'fr' => 'fr.host',
+            'de' => array('host' => 'host.de', 'path' => ''),
+            'en' => array('host' => 'host.com', 'path' => ''),
+            'fr' => array('host' => 'fr.host', 'path' => '')
         ));
 
         $this->assertEquals('/welcome-on-our-website', $router->generate('welcome'));
-        $this->assertEquals('http://en.host/welcome-on-our-website', $router->generate('welcome', array(), UrlGeneratorInterface::ABSOLUTE_URL));
+        $this->assertEquals('http://host.com/welcome-on-our-website', $router->generate('welcome', array(), UrlGeneratorInterface::ABSOLUTE_URL));
 
         $context = new RequestContext();
         $context->setParameter('_locale', 'en');
         $router->setContext($context);
 
         $this->assertEquals('/welcome-on-our-website', $router->generate('welcome'));
-        $this->assertEquals('http://en.host/welcome-on-our-website', $router->generate('welcome', array(), UrlGeneratorInterface::ABSOLUTE_URL));
-        $this->assertEquals('http://de.host/willkommen-auf-unserer-webseite', $router->generate('welcome', array('_locale' => 'de')));
-        $this->assertEquals('http://de.host/willkommen-auf-unserer-webseite', $router->generate('welcome', array('_locale' => 'de'), UrlGeneratorInterface::ABSOLUTE_URL));
+        $this->assertEquals('http://host.com/welcome-on-our-website', $router->generate('welcome', array(), UrlGeneratorInterface::ABSOLUTE_URL));
+        $this->assertEquals('http://host.de/willkommen-auf-unserer-webseite', $router->generate('welcome', array('_locale' => 'de')));
+        $this->assertEquals('http://host.de/willkommen-auf-unserer-webseite', $router->generate('welcome', array('_locale' => 'de'), UrlGeneratorInterface::ABSOLUTE_URL));
     }
 
     public function testGenerateDoesUseCorrectHostWhenSchemeChanges()
@@ -83,8 +83,8 @@ class I18nRouterTest extends \PHPUnit_Framework_TestCase
         $router = $this->getRouter();
 
         $router->setHostMap(array(
-            'en' => 'en.test',
-            'de' => 'de.test',
+            'en' => array('host' => 'en.test', 'path' => ''),
+            'de' => array('host' => 'de.test', 'path' => '')
         ));
 
         $context = new RequestContext();
@@ -114,9 +114,9 @@ class I18nRouterTest extends \PHPUnit_Framework_TestCase
     {
         $router = $this->getRouter();
         $router->setHostMap(array(
-            'en' => 'en.test',
-            'de' => 'de.test',
-            'fr' => 'fr.test',
+            'en' => array('host' => 'en.test', 'path' => ''),
+            'de' => array('host' => 'de.test', 'path' => ''),
+            'fr' => array('host' => 'fr.test', 'path' => '')
         ));
 
         $context = new RequestContext('', 'GET', 'en.test');
@@ -252,10 +252,10 @@ class I18nRouterTest extends \PHPUnit_Framework_TestCase
     {
         $router = $this->getNonRedirectingHostMapRouter();
         $router->setHostMap(array(
-            'en_US' => 'foo.com',
-            'en_UK' => 'foo.com',
-            'nl_NL' => 'nl.test',
-            'nl_BE' => 'be.test',
+            'en_US' => array('host' => 'foo.com', 'path' => '/us/'),
+            'en_UK' => array('host' => 'foo.com', 'path' => ''),
+            'nl_NL' => array('host' => 'nl.test', 'path' => ''),
+            'nl_BE' => array('host' => 'be.test', 'path' => '')
         ));
 
         $context = $router->getContext();
@@ -336,10 +336,10 @@ class I18nRouterTest extends \PHPUnit_Framework_TestCase
         $router->setI18nLoaderId('i18n_loader');
         $router->setDefaultLocale('en_UK');
         $router->setHostMap(array(
-            'en_UK' => 'uk.test',
-            'en_US' => 'us.test',
-            'nl_NL' => 'nl.test',
-            'nl_BE' => 'be.test',
+            'en_UK' => array('host' => 'uk.test', 'path' => ''),
+            'en_US' => array('host' => 'us.test', 'path' => ''),
+            'nl_NL' => array('host' => 'nl.test', 'path' => ''),
+            'nl_BE' => array('host' => 'be.test', 'path' => '')
         ));
 
         return $router;
