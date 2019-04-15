@@ -91,6 +91,7 @@ final class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('host')->cannotBeEmpty()->end()
                                 ->scalarNode('path')->defaultValue('/')->end()
+                                ->scalarNode('legacy')->defaultNull()->end()
                             ->end()
                         ->end()
                     ->end()
